@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Login / Signup</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>🔐 Login or Signup</header>
+<div class="container">
+  <input type="text" id="username" placeholder="Username">
+  <input type="password" id="password" placeholder="Password">
+  <button onclick="signup()">Signup</button>
+  <button onclick="login()">Login</button>
+</div>
+<script src="script.js"></script>
+<script>
+const API = "http://127.0.0.1:8000/api";
+
+async function signup() {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
+  if(!username||!password){alert("Fill both fields"); return;}
+
+  const res = await fetch(`${API}/signup`, {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({username,password})
+  });
+  const data = await res.json();
+  if(res.status===200){saveUser(username); goTo("quiz.html");}
+  else alert(data.detail || "Signup failed");
+}
+
+async function login() {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
+  if(!username||!password){alert("Fill both fields"); return;}
+
+  const res = await fetch(`${API}/login`, {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({username,password})
+  });
+  const data = await res.json();
+  if(res.status===200){saveUser(username); goTo("quiz.html");}
+  else alert(data.detail || "Login failed");
+}
+</script>
+</body>
+</html>

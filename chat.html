@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>संवाद AI Chat</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    /* Floating glowing circles */
+    .circle {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.35;
+      animation: float 12s infinite ease-in-out alternate;
+      z-index: 0;
+    }
+    .circle:nth-child(1) {
+      width: 300px; height: 300px;
+      background: #2575fc;
+      top: -80px; left: -80px;
+    }
+    .circle:nth-child(2) {
+      width: 400px; height: 400px;
+      background: #6a11cb;
+      bottom: -120px; right: -100px;
+      animation-duration: 14s;
+    }
+
+    @keyframes float {
+      from { transform: translateY(0); }
+      to { transform: translateY(-40px); }
+    }
+
+    header {
+      padding: 20px;
+      text-align: center;
+      font-size: 26px;
+      font-weight: bold;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      color: #fff;
+      z-index: 2;
+    }
+
+    #chatBox {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .msg {
+      margin: 10px 0;
+      padding: 12px 18px;
+      border-radius: 20px;
+      max-width: 70%;
+      line-height: 1.5;
+      word-wrap: break-word;
+      font-size: 16px;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .user {
+      background: linear-gradient(135deg, #29b6f6, #0288d1);
+      margin-left: auto;
+      text-align: right;
+      box-shadow: 0 4px 15px rgba(41,182,246,0.4);
+      color: #fff;
+    }
+
+    .bot {
+      background: linear-gradient(135deg, #ffca28, #ff9800);
+      margin-right: auto;
+      text-align: left;
+      box-shadow: 0 4px 15px rgba(255,152,0,0.4);
+      color: #000;
+    }
+
+    #inputBox {
+      display: flex;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(12px);
+      z-index: 2;
+    }
+
+    #inputBox input {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 25px;
+      outline: none;
+      font-size: 16px;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      box-shadow: inset 0 0 8px rgba(255,255,255,0.2);
+    }
+    #inputBox input::placeholder {
+      color: #ddd;
+    }
+
+    #inputBox button {
+      padding: 12px 25px;
+      margin-left: 10px;
+      border: none;
+      border-radius: 25px;
+      background: linear-gradient(135deg, #29b6f6, #673ab7);
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 5px 15px rgba(79, 172, 254, 0.5);
+    }
+    #inputBox button:hover {
+      background: linear-gradient(135deg, #673ab7, #29b6f6);
+      transform: translateY(-2px);
+      box-shadow: 0 7px 20px rgba(79, 172, 254, 0.7);
+    }
+  </style>
+</head>
+<body>
+  <!-- floating background orbs -->
+  <div class="circle"></div>
+  <div class="circle"></div>
+
+  <header>💬 Chat with संवाद AI</header>
+  <div id="chatBox"></div>
+  <div id="inputBox">
+    <input type="text" id="userInput" placeholder="Type your message..." />
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const userLevel = params.get("level") || "Average"; // Passed from result.html
+    const chatBox = document.getElementById("chatBox");
+
+    function addMessage(text, sender) {
+      const div = document.createElement("div");
+      div.classList.add("msg", sender);
+      div.innerText = text;
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById("userInput");
+      const message = input.value.trim();
+      if (!message) return;
+      addMessage(message, "user");
+      input.value = "";
+
+      try {
+        const res = await fetch("http://127.0.0.1:8000/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: "guest",
+            message: message
+          })
+        });
+
+        const data = await res.json();
+        const reply = data?.reply || "⚠️ AI did not respond.";
+        addMessage(reply, "bot");
+      } catch (err) {
+        console.error("Chat error:", err);
+        addMessage("⚠️ Error connecting to AI backend", "bot");
+      }
+    }
+
+    // Optional: press Enter to send
+    document.getElementById("userInput").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") sendMessage();
+    });
+  </script>
+</body>
+</html>

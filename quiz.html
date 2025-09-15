@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>संवाद AI Quiz</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    /* --- Page & background --- */
+    :root {
+      --bg1: #0f2027;
+      --bg2: #203a43;
+      --bg3: #2c5364;
+      --glass: rgba(20,20,40,0.65);
+      --accent-a: #00ffff;
+      --accent-b: #ff00ff;
+      --accent-c: #00ff99;
+    }
+
+    html,body { height:100%; margin:0; }
+   body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: white;
+  text-align: center;
+  padding: 40px 20px;  /* smaller padding so it fits */
+  min-height: 100vh;   /* full screen height */
+  overflow-y: auto;    /* allow scrolling if content is tall */
+}
+
+
+    /* floating orbs (decorative) */
+    .orb {
+      position:absolute;
+      border-radius:50%;
+      filter: blur(12px);
+      opacity:0.8;
+      pointer-events:none;
+      mix-blend-mode: screen;
+      animation: float 12s infinite ease-in-out alternate;
+    }
+    .orb.orb-1 { width:180px; height:180px; top:10%; left:8%; background: radial-gradient(circle, rgba(0,255,255,0.6), transparent 60%); }
+    .orb.orb-2 { width:240px; height:240px; bottom:6%; right:6%; background: radial-gradient(circle, rgba(255,0,255,0.55), transparent 60%); animation-duration:16s; }
+    .orb.orb-3 { width:120px; height:120px; top:25%; right:22%; background: radial-gradient(circle, rgba(0,255,128,0.55), transparent 60%); animation-duration:18s; }
+
+    @keyframes float {
+      0% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-36px) scale(1.07); }
+      100% { transform: translateY(0) scale(1); }
+    }
+
+    /* --- Glass card --- */
+    .container {
+      width: 900px;
+      max-width: 96%;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    .card {
+      background: var(--glass);
+      backdrop-filter: blur(10px) saturate(120%);
+      padding: 36px;
+      border-radius: 18px;
+      border: 1px solid rgba(0,255,255,0.08);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 20px rgba(0,255,255,0.06);
+      text-align: left;
+    }
+
+    h2 {
+      margin: 0 0 18px 0;
+      font-size: 40px;
+      line-height: 1;
+      text-align: center;
+      background: linear-gradient(90deg, var(--accent-a), var(--accent-b), var(--accent-c));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 18px rgba(0,255,255,0.10);
+    }
+
+    .sub {
+      text-align:center;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 18px;
+      font-size: 16px;
+    }
+
+   .quiz-box {
+  background: rgba(255,255,255,0.1);
+  padding: 30px;
+  border-radius: 20px;
+  width: 60%;
+  max-width: 800px;  /* prevents it from being too wide */
+  margin: 20px auto;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
+    .question p { margin: 6px 0 8px 0; }
+
+    input[type="text"] {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.03);
+      color: #fff;
+      font-size: 16px;
+      outline: none;
+      transition: box-shadow .18s ease, background .18s;
+    }
+    input[type="text"]:focus {
+      background: rgba(255,255,255,0.06);
+      box-shadow: 0 0 18px rgba(0,255,255,0.14);
+      border-color: rgba(0,255,255,0.25);
+    }
+
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 30px 0; /* spacing above/below */
+}
+
+.btn {
+  display:inline-block;
+  padding:12px 28px;
+  border-radius:30px;
+  border:none;
+  cursor:pointer;
+  font-weight:700;
+  font-size:16px;
+  color:#051016;
+  background: linear-gradient(135deg, var(--accent-a), var(--accent-b));
+  box-shadow: 0 8px 24px rgba(0,255,255,0.12), 0 0 28px rgba(255,0,255,0.08);
+}
+
+    .btn {
+      display:inline-block;
+      padding:12px 28px;
+      border-radius:30px;
+      border:none;
+      cursor:pointer;
+      font-weight:700;
+      font-size:16px;
+      color:#051016;
+      background: linear-gradient(135deg, var(--accent-a), var(--accent-b));
+      box-shadow: 0 8px 24px rgba(0,255,255,0.12), 0 0 28px rgba(255,0,255,0.08);
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .btn.secondary {
+      background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      color: #e6f7ff;
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+    .btn:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(0,255,255,0.18); }
+
+    /* responsive */
+    @media (max-width:540px) {
+      h2 { font-size: 30px; }
+      .card { padding: 20px; }
+    }
+
+  </style>
+</head>
+<body>
+  <!-- decorative orbs -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <div class="container">
+    <div class="card">
+      <h2>🧠 संवाद AI IQ Quiz</h2>
+      <div class="sub">Answer the 5 quick questions — then see your AI level.</div>
+
+      <div class="quiz-box" id="quiz"></div>
+
+    <div class="actions">
+  <button class="btn" id="submitBtn" type="button">🚀 Submit Quiz</button>
+  <button class="btn secondary" id="clearBtn" type="button">♻️ Clear Answers</button>
+</div>
+
+  </div>
+
+  <script>
+    // QUIZ DATA
+    const quizData = [
+      { q: "1. What is 5 + 7?", a: "12" },
+      { q: "2. Who developed the theory of relativity?", a: "Einstein" },
+      { q: "3. What is the capital of France?", a: "Paris" },
+      { q: "4. Which planet is known as the Red Planet?", a: "Mars" },
+      { q: "5. What is 9 × 9?", a: "81" }
+    ];
+
+    // render questions using DOM APIs (avoids innerHTML quoting issues)
+    const quizContainer = document.getElementById('quiz');
+    quizData.forEach((item, idx) => {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'question';
+
+      const p = document.createElement('p');
+      p.textContent = item.q;
+      wrapper.appendChild(p);
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.id = 'q' + idx;
+      input.placeholder = 'Your answer...';
+      input.autocomplete = 'off';
+      wrapper.appendChild(input);
+
+      quizContainer.appendChild(wrapper);
+    });
+
+    // utility: normalizeAnswers
+    function normalize(str) {
+      return String(str || '').trim().toLowerCase();
+    }
+
+    // scoring logic: 0-2 Beginner, 3-4 Average, 5 Best
+    function computeLevel(score) {
+      if (score <= 2) return 'Beginner';
+      if (score <= 3) return 'Average';
+      return 'Best';
+    }
+
+    // submit handler
+    document.getElementById('submitBtn').addEventListener('click', function () {
+      let score = 0;
+      for (let i = 0; i < quizData.length; i++) {
+        const val = document.getElementById('q' + i).value;
+        if (normalize(val) === normalize(quizData[i].a)) score++;
+      }
+
+      // redirect to result page with safe query params
+      const level = computeLevel(score);
+      const params = new URLSearchParams({ score: String(score), level });
+      // if result.html is placed alongside this file, this will navigate correctly
+      window.location.href = 'result.html?' + params.toString();
+    });
+
+    // clear answers
+    document.getElementById('clearBtn').addEventListener('click', function () {
+      for (let i = 0; i < quizData.length; i++) {
+        document.getElementById('q' + i).value = '';
+      }
+    });
+
+    // allow Enter to move to next input or submit when on last
+    quizContainer.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        const target = e.target;
+        if (target.tagName.toLowerCase() === 'input') {
+          e.preventDefault();
+          const id = target.id;
+          const idx = parseInt(id.replace('q',''),10);
+          const next = document.getElementById('q' + (idx + 1));
+          if (next) next.focus();
+          else document.getElementById('submitBtn').click();
+        }
+      }
+    });
+  </script>
+</body>
+</html>
